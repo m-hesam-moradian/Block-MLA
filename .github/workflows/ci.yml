@@ -1,0 +1,65 @@
+name: CI
+
+on: [push, pull_request]
+
+jobs:
+  sanity_check:
+    name: "Phase -1: Algorithm Math Validation (CPU)"
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install package
+        run: pip install -e . --quiet
+
+      - name: Run Phase -1 sanity check (MUST pass before anything else)
+        run: python -m tests.sanity.single_worker_sync
+        # Expected: "PASS: loss decreased from X.XXXX to Y.YYYY"
+
+  unit_tests:
+    name: "Unit tests + type check + lint"
+    needs: sanity_check
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install with dev extras
+        run: pip install -e ".[dev]" --quiet
+
+      - name: Run unit tests
+        run: pytest tests/unit/ -v --tb=short
+
+      - name: Type check
+        run: mypy server/ worker/ --strict --ignore-missing-imports
+
+      - name: Lint
+        run: ruff check .
+
+  integration_test:
+    name: "Phase 0: 5-worker simulation (Block-MLA must beat Async-Nesterov)"
+    needs: unit_tests
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python 3.11
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install package
+        run: pip install -e . --quiet
+
+      - name: Run Phase 0 integration test
+        run: pytest tests/integration/test_server_worker_loop.py -v -m slow
+        # Expected: "Block-MLA (X.XX) beat Async-Nesterov (Y.YY)"
