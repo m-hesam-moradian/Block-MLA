@@ -2,8 +2,10 @@
 
 > **Dynamic Tensor-Aware Momentum Look-Ahead — 20-Node Async Distributed Training**
 
-[![Phase -1](https://img.shields.io/badge/Phase%20-1-passing-brightgreen)](tests/sanity/single_worker_sync.py)
-[![Phase 0](https://img.shields.io/badge/Phase%200-pending-lightgrey)](tests/integration/)
+[![Phase -1](https://img.shields.io/badge/Phase%20--1-✓%20PASSED%206.12→0.26-brightgreen)](tests/sanity/single_worker_sync.py)
+[![Phase 0](https://img.shields.io/badge/Phase%200-in%20progress-yellow)](tests/integration/)
+[![Phase 1](https://img.shields.io/badge/Phase%201-pending-lightgrey)](server/)
+[![Phase 2](https://img.shields.io/badge/Phase%202-pending-lightgrey)](docker-compose.yml)
 [![Python 3.11+](https://img.shields.io/badge/python-3.11+-blue)](https://python.org)
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow)](LICENSE)
 
